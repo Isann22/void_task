@@ -1,0 +1,77 @@
+<!-- Create Note Modal -->
+<div class="modal fade" id="createNoteModal" tabindex="-1" role="dialog" aria-labelledby="createNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-sm">
+            <form action="notes/create" method="POST">
+                <!-- Modal Header -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="createNoteModalLabel">
+                        <span class="bi bi-plus-circle-fill mr-2"></span>Create New Note
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body p-4">
+                    <!-- Title Input -->
+                    <div class="form-group">
+                        <label for="noteTitle" class="font-weight-bold">Title</label>
+                        <input
+                                type="text"
+                                class="form-control form-control-lg"
+                                id="noteTitle"
+                                name="title"
+                                placeholder="Enter note title"
+                                required
+                        >
+                    </div>
+
+                    <!-- Content Textarea -->
+                    <div class="form-group">
+                        <label for="noteContent" class="font-weight-bold">Content</label>
+                        <textarea
+                                class="form-control"
+                                id="noteContent"
+                                name="content"
+                                rows="6"
+                                placeholder="Write your note content here..."
+                                required
+                        ></textarea>
+                    </div>
+
+                    <!-- Pinned Toggle -->
+                    <div class="custom-control custom-switch">
+                        <input
+                                type="checkbox"
+                                class="custom-control-input"
+                                id="notePinned"
+                                name="pinned"
+                        >
+                        <label class="custom-control-label" for="notePinned">
+                            <span class="bi bi-pin-angle-fill mr-1"></span> Pin to top
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            data-dismiss="modal"
+                    >
+                        <span class="bi bi-x-lg mr-1"></span> Cancel
+                    </button>
+                    <button
+                            type="submit"
+                            class="btn btn-primary px-4"
+                    >
+                        <span class="bi bi-save-fill mr-1"></span> Save Note
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

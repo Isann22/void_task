@@ -1,0 +1,58 @@
+<% if (error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+<!-- Dashboard Section -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h4 class="mb-4">Dashboard Tugas</h4>
+    </div>
+
+    <!-- Status Chart -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Distribusi Status Tugas</h5>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Priority Chart -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Distribusi Prioritas Tugas</h5>
+                <div class="chart-container">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Nearing Deadline -->
+    <div class="col-lg-12 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Tugas Mendekati Deadline</h5>
+                <div class="chart-container">
+                    <canvas id="deadlineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+</style>

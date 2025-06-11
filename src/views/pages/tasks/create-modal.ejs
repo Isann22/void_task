@@ -1,0 +1,61 @@
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">Tambah Tugas Baru</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="taskForm" action="/tasks/create" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="_method" id="formMethod" value="POST">
+                    <input type="hidden" name="id" id="taskId">
+
+                    <div class="form-group">
+                        <label for="title">Judul Tugas <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" required placeholder="Masukkan judul tugas">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Deskripsi</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Tambahkan deskripsi tugas (opsional)"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dueDate">Tanggal Jatuh Tempo</label>
+                                <input type="datetime-local" class="form-control" id="dueDate" name="dueDate">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="priority">Prioritas <span class="text-danger">*</span></label>
+                                <select class="form-control" id="priority" name="priority" required>
+                                    <option value="">Pilih Prioritas</option>
+                                    <option value="low">Rendah</option>
+                                    <option value="medium" selected>Sedang</option>
+                                    <option value="high">Tinggi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status <span class="text-danger">*</span></label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="todo" selected>Belum Dimulai</option>
+                            <option value="in_progress">Dalam Proses</option>
+                            <option value="done">Selesai</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Simpan Tugas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

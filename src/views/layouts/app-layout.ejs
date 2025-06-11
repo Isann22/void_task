@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%- title %></title>
+
+    <!-- Perhatikan path yang benar tanpa } -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/themes/vendors/feather/feather.css">
+    <link rel="stylesheet" href="/themes/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/themes/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/themes/css/vertical-layout-light/style.css">
+    <link rel="shortcut icon" href="/themes/images/favicon.png"/>
+</head>
+
+<body>
+
+<div class="container-scroller">
+    <%- include('../partials/navbar') %>
+    <div class="container-fluid page-body-wrapper">
+        <%- include('../partials/sidebar') %>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <%- body %>
+            </div>
+            <%- include('../partials/footer') %>
+        </div>
+    </div>
+</div>
+
+
+<script src="/themes/vendors/js/vendor.bundle.base.js"></script>
+<script src="/themes/js/off-canvas.js"></script>
+<script src="/themes/js/hoverable-collapse.js"></script>
+<script src="/themes/js/template.js"></script>
+<script src="/themes/vendors/chart.js/Chart.min.js"></script>
+<script src="/themes/js/dashboard.js"></script>
+<script src="/js/index.js"></script>
+<script src="/js/notes.js"></script>
+<script src="/js/tasks.js"></script>
+<script src="/js/charts.js"></script>
+
+<script src="/js/tasks.js"></script>
+
+</body>

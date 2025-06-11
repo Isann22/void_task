@@ -1,0 +1,69 @@
+<!-- Main Content -->
+<div class="d-flex justify-content-between mb-4">
+    <h2>Daftar Notes</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNoteModal">
+        Tambah notes
+    </button>
+</div>
+
+<% if (error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+
+<% if (success && success.length) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+
+<!-- Check if notes exist -->
+<% if (notes && notes.length > 0) { %>
+    <!-- Pinned Notes -->
+    <% const pinnedNotes = notes.filter(note => note.isPinned) %>
+    <% if (pinnedNotes.length > 0) { %>
+        <div class="mb-5">
+            <h4 class="text-muted mb-3">Pinned</h4>
+            <div class="row">
+                <% pinnedNotes.forEach(note => { %>
+                    <%- include('_notesCard', { note }) %>
+                <% }) %>
+            </div>
+        </div>
+    <% } %>
+
+    <!-- Other Notes -->
+    <% const otherNotes = notes.filter(note => !note.isPinned) %>
+    <% if (otherNotes.length > 0) { %>
+        <div>
+            <h4 class="text-muted mb-3">All Notes</h4>
+            <div class="row">
+                <% otherNotes.forEach(note => { %>
+                    <%- include('_notesCard', { note }) %>
+                <% }) %>
+            </div>
+        </div>
+    <% } %>
+<% } else { %>
+    <!-- No Notes Message -->
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-sticky-note fa-5x text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">Belum Ada Note</h4>
+        <p class="text-muted mb-4">Anda belum memiliki catatan apapun. Mulai buat catatan pertama Anda!</p>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createNoteModal">
+            <i class="fas fa-plus me-2"></i>
+            Buat Note Pertama
+        </button>
+    </div>
+<% } %>
+
+<%- include('create-modal') %>

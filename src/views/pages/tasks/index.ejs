@@ -1,0 +1,269 @@
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Daftar Tugas Saya</h4>
+            <div>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#taskModal" data-action="create">
+                    <i class="mdi mdi-plus"></i> Tambah Tugas
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('create-modal') %>
+
+<% if (error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+
+<% if (success && success.length) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+
+<div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTaskModalLabel">Edit Tugas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editTaskForm" method="POST" action="">
+                <div class="modal-body">
+                    <input type="hidden" id="editTaskId" name="id">
+                    <div class="form-group">
+                        <label for="editTitle">Judul Tugas</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Deskripsi</label>
+                        <textarea class="form-control" id="editDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPriority">Prioritas</label>
+                        <select class="form-control" id="editPriority" name="priority" required>
+                            <option value="low">Rendah</option>
+                            <option value="medium">Sedang</option>
+                            <option value="high">Tinggi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDueDate">Tanggal Jatuh Tempo</label>
+                        <input type="date" class="form-control" id="editDueDate" name="dueDate">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteTaskModal" tabindex="-1" role="dialog" aria-labelledby="deleteTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTaskModalLabel">Hapus Tugas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="deleteTaskForm" method="POST" action="">
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus tugas ini?</p>
+                    <input type="hidden" id="deleteTaskId" name="id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Prioritas</label>
+            <select class="form-control filter-select" id="priorityFilter">
+                <option value="">Semua Prioritas</option>
+                <option value="low">Rendah</option>
+                <option value="medium">Sedang</option>
+                <option value="high">Tinggi</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Status</label>
+            <select class="form-control filter-select" id="statusFilter">
+                <option value="">Semua Status</option>
+                <option value="todo">Belum Dimulai</option>
+                <option value="in_progress">Dalam Proses</option>
+                <option value="done">Selesai</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-4 d-flex align-items-center">
+        <button class="btn btn-outline-secondary w-100" id="resetFilters">
+            <i class="mdi mdi-filter-remove"></i> Reset Filter
+        </button>
+    </div>
+</div>
+
+<!-- No Results Message -->
+<div id="noResults" class="alert alert-warning d-none col-12">
+    Tidak ada tugas yang sesuai dengan filter yang dipilih.
+</div>
+
+<!-- Task Cards -->
+<div class="row task-container">
+    <% tasks.forEach(task => { %>
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-4 task-card"
+             data-priority="<%= task.priority %>"
+             data-status="<%= task.status %>"
+             style="transition: transform 0.2s ease-in-out;">
+
+            <div class="card" style="border: 1px solid #e3e6f0;
+                    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+                    border-left: 4px solid <%= task.priority === 'high' ? '#dc3545' :
+                    task.priority === 'medium' ? '#ffc107' : '#28a745' %>;">
+                <div class="card-body">
+                    <!-- Header Section -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title mb-0" style="color: #2c3e50; font-weight: 600;">
+                            <%= task.title %>
+                        </h5>
+
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                    type="button"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                    style="border: none; background: transparent;">
+                                <i class="mdi mdi-dots-vertical"></i>
+                            </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item edit-task"
+                                            onclick="loadTask(
+                                                    '<%= task.id %>',
+                                                    '<%= task.title %>',
+                                                    '<%= task.description %>',
+                                                    '<%= task.priority %>',
+                                                    '<%= task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '' %>'
+                                                    )">
+                                        <i class="mdi mdi-pencil mr-2"></i>Edit
+                                    </button>
+                                    <button class="dropdown-item delete-task"
+                                            onclick="setDeleteId('<%= task.id %>')">
+                                        <i class="mdi mdi-delete mr-2"></i>Hapus
+                                    </button>
+
+                                <div class="dropdown-divider"></div>
+
+                                <button class="dropdown-item change-status"
+                                        data-id="<%= task.id %>"
+                                        data-status="todo"
+                                        style="padding: 8px 16px; transition: background-color 0.2s;">
+                                    <i class="mdi mdi-checkbox-blank-outline mr-2"></i>Tandai Belum Dimulai
+                                </button>
+                                <button class="dropdown-item change-status"
+                                        data-id="<%= task.id %>"
+                                        data-status="in_progress"
+                                        style="padding: 8px 16px; transition: background-color 0.2s;">
+                                    <i class="mdi mdi-progress-clock mr-2"></i>Tandai Dalam Proses
+                                </button>
+                                <button class="dropdown-item change-status"
+                                        data-id="<%= task.id %>"
+                                        data-status="done"
+                                        style="padding: 8px 16px; transition: background-color 0.2s;">
+                                    <i class="mdi mdi-checkbox-marked-outline mr-2"></i>Tandai Selesai
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <% if(task.description) { %>
+                        <p class="card-text text-muted mb-3" style="line-height: 1.5; font-size: 0.9rem;">
+                            <%= task.description %>
+                        </p>
+                    <% } %>
+
+                    <!-- Date Section - Moved to separate row -->
+                    <% if(task.dueDate) { %>
+                        <%
+                            const today = new Date();
+                            const dueDate = new Date(task.dueDate);
+                            const overdue = dueDate < today;
+                        %>
+                        <div class="mb-2">
+                            <small class="text-<%= overdue ? 'danger' : 'muted' %>"
+                                   style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.25rem;">
+                                <i class="mdi mdi-calendar-clock"></i>
+                                <%= dueDate.toLocaleDateString('id-ID') %>
+                                <% if(overdue) { %>
+                                    <span class="badge badge-danger ml-2" style="font-size: 0.65em; padding: 0.25em 0.4em;">
+                                        Terlambat
+                                    </span>
+                                <% } %>
+                            </small>
+                        </div>
+                    <% } %>
+
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <span class="badge <%= task.priority === 'high' ? 'badge-danger' :
+                                    task.priority === 'medium' ? 'badge-warning' : 'badge-success' %>">
+                                <%= task.priority === 'high' ? 'Tinggi' :
+                                        task.priority === 'medium' ? 'Sedang' : 'Rendah' %>
+                            </span>
+                            <span class="badge status-badge <%= getStatusClass(task.status) %>">
+                                <%= getStatusText(task.status) %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+</div>
+
+<!-- Empty State -->
+<% if(tasks.length === 0) { %>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <h4 class="text-muted">Tidak ada tugas</h4>
+                    <p class="text-muted">Buat tugas pertama Anda dengan mengklik tombol "Tambah Tugas"</p>
+                    <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#taskModal">
+                        <i class="mdi mdi-plus"></i> Tambah Tugas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
