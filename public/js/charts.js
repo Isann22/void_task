@@ -1,9 +1,26 @@
+async function fetchExpensesData() {
+    try {
+        const response = await fetch('/api/expenses-data');
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to fetch expenses data');
+        }
+
+        return result.data;
+    } catch (error) {
+        console.error('Error fetching expenses data:', error);
+        return null;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        const [statusResponse, priorityResponse, deadlineResponse] = await Promise.all([
+        const [statusResponse, priorityResponse, deadlineResponse, expensesData] = await Promise.all([
             fetch('/api/task-status'),
             fetch('/api/task-priority'),
-            fetch('/api/tasks-deadline')
+            fetch('/api/tasks-deadline'),
+            fetchExpensesData()// Add the new endpoint
         ]);
 
         const statusData = await statusResponse.json();
@@ -13,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderStatusChart(statusData);
         renderPriorityChart(priorityData);
         renderDeadlineChart(deadlineData);
+        renderExpensesChart(expensesData); // Add this new function call
 
     } catch (error) {
         console.error('Error loading dashboard data:', error);
@@ -172,3 +190,90 @@ function renderDeadlineChart(data) {
         }
     });
 }
+
+function renderExpensesChart(data) {
+    if (!data) {
+        console.error('No expenses data available');
+        return;
+    }
+
+    // Monthly expenses chart
+    const monthlyCtx = document.getElementById('monthlyExpensesChart')?.getContext('2d');
+    if (monthlyCtx && data.monthlyExpenses) {
+        new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: data.monthlyExpenses.labels,
+                datasets: [{
+                    label: 'Pengeluaran Bulanan',
+                    data: data.monthlyExpenses.data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp' + value.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp' + context.raw.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Category expenses chart
+    const categoryCtx = document.getElementById('categoryExpensesChart')?.getContext('2d');
+    if (categoryCtx && data.categoryExpenses) {
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: data.categoryExpenses.labels,
+                datasets: [{
+                    data: data.categoryExpenses.data,
+                    backgroundColor: data.categoryExpenses.colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: Rp${value.toLocaleString('id-ID')} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+

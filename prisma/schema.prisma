@@ -14,14 +14,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  email     String   @unique
+  id        String     @id @default(uuid())
+  username  String     @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   notes     Note[]
   tasks     Task[]
+  Expense   Expense[]
+  ShopList  ShopList[]
 
   @@map("users")
 }
@@ -52,4 +54,24 @@ model Task {
   updatedAt   DateTime  @updatedAt
 
   @@map("tasks")
+}
+
+model Expense {
+  id       String   @id @default(uuid())
+  amount   Int
+  itemName String
+  category String   @default("Belanja")
+  date     DateTime @default(now())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+}
+
+model ShopList {
+  id        String   @id @default(uuid())
+  itemName  String
+  price     Int
+  isBought  Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }

@@ -12,7 +12,7 @@ pages.get('/register', (req, res) => {
         formData: req.flash('formData')[0] || {}})
 })
 
-pages.get('/login', (req, res) => {
+pages.get('/', (req, res) => {
 
     if (req.session.user) {
         return res.redirect('/dashboard');

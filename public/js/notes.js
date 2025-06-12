@@ -12,7 +12,7 @@ function loadNote(id, title, content, pinned) {
 }
 
 
-function setDeleteId(id) {
+function setDeleteIdNotes(id) {
     $('#deleteForm').attr('action', `/notes/deletes/${id}`);
     $('#deleteModal').modal('show');
 }

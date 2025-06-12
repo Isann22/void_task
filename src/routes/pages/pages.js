@@ -2,6 +2,7 @@ import express from 'express';
 import {authMidleware} from "../../middleware/auth-midleware.js";
 import {createNote, deleteNote, getAllNotes, updateNote} from "../../controller/notes-controller.js";
 import {createTask, deleteTask, getAllTasks, updateTask, updateTaskStatus} from "../../controller/task-controller.js";
+import {createExpense, deleteExpense, getAllExpenses, updateExpense} from "../../controller/expenses-controller.js";
 
 const auth = express.Router()
 
@@ -23,5 +24,12 @@ auth.post('/tasks/create',createTask)
 auth.post('/tasks/update/:id',updateTask)
 auth.post('/tasks/delete/:id',deleteTask)
 auth.patch('/tasks/:id/status',updateTaskStatus);
+
+//expenses
+auth.get('/expenses',getAllExpenses)
+auth.post('/expenses/create',createExpense)
+auth.post('/expenses/delete/:id',deleteExpense)
+auth.post('/expenses/update/:id',updateExpense)
+
 
 export {auth}

@@ -1,10 +1,22 @@
-<!-- Main Content -->
-<div class="d-flex justify-content-between mb-4">
-    <h2>Daftar Notes</h2>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNoteModal">
-        Tambah notes
-    </button>
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card total-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title mb-1">Notes</h4>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNoteModal">
+                            Tambah notes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <% if (error && error.length) { %>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

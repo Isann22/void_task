@@ -94,6 +94,83 @@ chartRouter.get('/api/tasks-deadline', async (req, res) => {
     }
 });
 
+chartRouter.get('/api/expenses-data', async (req, res) => {
+    try {
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(`${currentYear}-01-01`);
+        const endDate = new Date(`${currentYear}-12-31`);
+
+        // Get monthly expenses data
+        const monthlyData = await prisma.$queryRaw`
+            SELECT 
+                EXTRACT(MONTH FROM date) as month,
+                COALESCE(SUM(amount), 0) as total
+            FROM 
+                Expense
+            WHERE 
+                date >= ${startDate} AND date <= ${endDate}
+            GROUP BY 
+                EXTRACT(MONTH FROM date)
+            ORDER BY 
+                month ASC
+        `;
+
+        // Get category expenses data
+        const categoryData = await prisma.expense.groupBy({
+            by: ['category'],
+            where: {
+                date: {
+                    gte: startDate,
+                    lte: endDate
+                }
+            },
+            _sum: {
+                amount: true
+            },
+            orderBy: {
+                _sum: {
+                    amount: 'desc'
+                }
+            }
+        });
+
+        // Format response data
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+        const monthlyChartData = Array(12).fill(0);
+
+        monthlyData.forEach(item => {
+            const monthIndex = Number(item.month) - 1;
+            monthlyChartData[monthIndex] = Number(item.total);
+        });
+
+        const categoryResponse = categoryData.map(item => ({
+            category: item.category,
+            amount: Number(item._sum?.amount || 0)
+        }));
+
+        res.json({
+            success: true,
+            data: {
+                monthlyExpenses: {
+                    labels: months,
+                    data: monthlyChartData
+                },
+                categoryExpenses: {
+                    labels: categoryResponse.map(item => item.category),
+                    data: categoryResponse.map(item => item.amount),
+                    colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error('Error fetching expenses data:', err);
+        res.status(500).json({
+            success: false,
+            error: 'Server error'
+        });
+    }
+});
 export {
     chartRouter
 }

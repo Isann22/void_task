@@ -1,0 +1,64 @@
+<div class="modal fade" id="createExpenseModal" tabindex="-1" role="dialog" aria-labelledby="createExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createExpenseModalLabel">
+                    <i class="bi bi-cash-stack mr-2"></i>Catat Pengeluaran Baru
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/expenses/create" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-card-text mr-2"></i>Nama Item
+                        </label>
+                        <input type="text" class="form-control" name="itemName" placeholder="Contoh: Mie Ayam + Es Teh" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-currency-exchange mr-2"></i>Jumlah
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="number" class="form-control" name="amount" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-tags mr-2"></i>Kategori
+                        </label>
+                        <select class="form-control" name="category">
+                            <option value="Makan"><i class="bi bi-egg-fried"></i> Makan</option>
+                            <option value="Transport"><i class="bi bi-bus-front"></i> Transport</option>
+                            <option value="Belanja"><i class="bi bi-cart"></i> Belanja</option>
+                            <option value="Listrik"><i class="bi bi-lightbulb"></i> Listrik</option>
+                            <option value="Pulsa"><i class="bi bi-phone"></i> Pulsa</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-calendar mr-2"></i>Tanggal
+                        </label>
+                        <input type="date" class="form-control" name="date" value="<%= new Date().toISOString().split('T')[0] %>">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="bi bi-x-circle mr-1"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save mr-1"></i>Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

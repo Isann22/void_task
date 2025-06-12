@@ -31,8 +31,9 @@ $(document).ready(function() {
         const queryParams = new URLSearchParams();
         if (priority) queryParams.set('priority', priority);
         if (status) queryParams.set('status', status);
-        window.history.pushState({}, '', '/tasks?' + queryParams.toString());
-
+        if (priority || status) {  // Hanya update URL jika ada filter yang dipilih
+            window.history.pushState({}, '', '/tasks?' + queryParams.toString());
+        }
         $('.task-card').each(function() {
             const cardPriority = $(this).data('priority');
             const cardStatus = $(this).data('status');

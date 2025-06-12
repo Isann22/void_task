@@ -1,0 +1,165 @@
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card total-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title mb-1">Total Pengeluaran Bulan Ini</h4>
+                        <p class="text-muted mb-0"><%= moment().format('MMMM YYYY') %></p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <h2 class="mb-0 amount mr-4"><%= total %></h2>
+                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createExpenseModal">
+                            <i class="bi bi-plus-circle mr-2"></i>Tambah Pengeluaran
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+
+<% if (success && success.length) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>
+<div class="row">
+    <% if (expenses.length === 0) { %>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <div class="empty-state-icon mb-3">
+                        <i class="bi bi-wallet2" style="font-size: 3rem; color: #6c757d;"></i>
+                    </div>
+                    <h4 class="mb-3">Belum ada catatan pengeluaran</h4>
+                    <p class="text-muted mb-4">Mulai catat pengeluaran harianmu untuk mengontrol keuangan kos</p>
+                    <button type="button" class="btn btn-primary px-4" data-toggle="modal" data-target="#createExpenseModal">
+                        <i class="bi bi-plus-circle mr-2"></i>Tambah Pengeluaran
+                    </button>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <% expenses.forEach(expense => { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card expense-card <%= expense.category.toLowerCase() %> h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="card-title mb-0"><%= expense.itemName %></h5>
+                            <span class="badge badge-light">
+                                <% const cat = categories.find(c => c.name === expense.category); %>
+                                <%= cat ? cat.emoji : '📌' %> <%= expense.category %>
+                            </span>
+                        </div>
+
+                        <div class="text-muted mb-3">
+                            <i class="bi bi-calendar3 mr-1"></i><%= moment(expense.date).format('DD MMM YYYY') %>
+                        </div>
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0 amount"><%= expense.amount %></h3>
+                            <div class="action-buttons">
+                                <button  class="btn btn-sm btn-outline-secondary mr-1"
+                                   onclick="loadExpense(
+                                           '<%= expense.id %>',
+                                           '<%= expense.itemName %>',
+                                           '<%= expense.amount %>',
+                                           '<%= expense.category %>',
+                                           '<%= moment(expense.date).format('YYYY-MM-DD') %>',
+                                           )">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger"  onclick="setDeleteIdExpenses('<%= expense.id %>')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+</div>
+
+<!-- Modal Create Expense -->
+<%- include('create-modal') %>
+
+<!-- Modal Delete Confirmation -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Konfirmasi Penghapusan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus pengeluaran "<span id="expenseNameToDelete"></span>"?</p>
+                <p class="text-danger">Data yang dihapus tidak dapat dikembalikan.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editExpenseModal" tabindex="-1" role="dialog" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editExpenseModalLabel">Edit Pengeluaran</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editExpenseForm" method="POST">
+                <input type="hidden" name="_method" value="PUT">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editItemName">Nama Item</label>
+                        <input type="text" class="form-control" id="editItemName" name="itemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAmount">Jumlah</label>
+                        <input type="number" class="form-control" id="editAmount" name="amount" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategory">Kategori</label>
+                        <select class="form-control" id="editCategory" name="category" required>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category.name %>"><%= category.emoji %> <%= category.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDate">Tanggal</label>
+                        <input type="date" class="form-control" id="editDate" name="date" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -6,13 +6,76 @@
         </button>
     </div>
 <% } %>
-<!-- Dashboard Section -->
-<div class="row mt-5">
-    <div class="col-md-12">
-        <h4 class="mb-4">Dashboard Tugas</h4>
+
+<div class="col-md-12 mb-4">
+    <div class="card welcome-banner border-0">
+        <div class="card-body">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="text-center text-md-left mb-3 mb-md-0">
+                    <h3 class="welcome-title mb-2">
+                        <i class="bi bi-emoji-smile welcome-icon"></i>
+                        Selamat datang, <span class="username"><%= user.username %></span>!
+                    </h3>
+                    <p class="welcome-date mb-0">
+                        <i class="bi bi-calendar2-week"></i>
+                        <span class="ml-2">
+                            <%= new Date().toLocaleDateString('id-ID', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            }) %>
+                        </span>
+                    </p>
+                </div>
+                <div class="welcome-time-badge">
+                    <i class="bi bi-clock"></i>
+                    <span class="ml-2" id="current-time"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mt-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+            <h2 class="h4 font-weight-bold text-primary mb-0">
+                <i class="bi bi-cash-stack mr-2"></i>Pengeluaran
+            </h2>
+        </div>
     </div>
 
-    <!-- Status Chart -->
+    <div class="col-lg-8 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Pengeluaran Bulanan</h5>
+                <div class="chart-container">
+                    <canvas id="monthlyExpensesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Pengeluaran per Kategori</h5>
+                <div class="chart-container">
+                    <canvas id="categoryExpensesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 mb-4">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+            <h2 class="h4 font-weight-bold text-dark mb-0">
+                <i class="bi bi-list-check mr-2 text-primary"></i>Tasks
+            </h2>
+        </div>
+    </div>
+
     <div class="col-lg-6 mb-4">
         <div class="card h-100">
             <div class="card-body">
@@ -24,7 +87,6 @@
         </div>
     </div>
 
-    <!-- Priority Chart -->
     <div class="col-lg-6 mb-4">
         <div class="card h-100">
             <div class="card-body">
@@ -36,7 +98,6 @@
         </div>
     </div>
 
-    <!-- Tasks Nearing Deadline -->
     <div class="col-lg-12 mb-4">
         <div class="card h-100">
             <div class="card-body">
@@ -55,4 +116,87 @@
         height: 300px;
         width: 100%;
     }
+
+    .card {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: none;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    h4 {
+        color: #444;
+        font-weight: 600;
+    }
+
+    .welcome-banner {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(to bottom, #4e73df, #224abe);
+    }
+
+    .welcome-title {
+        color: #2e3a4e;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .welcome-icon {
+        color: #4e73df;
+        margin-right: 10px;
+    }
+
+    .username {
+        color: #224abe;
+    }
+
+    .welcome-date {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .welcome-time-badge {
+        background-color: #4e73df;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(78, 115, 223, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .welcome-title {
+            font-size: 1.3rem;
+        }
+
+        .welcome-time-badge {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+    }
 </style>
+
+<script>
+
+</script>
